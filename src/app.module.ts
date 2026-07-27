@@ -10,10 +10,13 @@ import { UsersModule } from './modules/users/users.module';
 import { IntakeModule } from './modules/intake/intake.module';
 import { GoalsModule } from './modules/goals/goals.module';
 import { PlanEngineModule } from './modules/plan-engine/plan-engine.module';
-
+import { TrackingModule } from './modules/tracking/tracking.module';
+import { CoachModule } from './modules/coach/coach.module';
+import { AuditModule } from './modules/audit/audit.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
- imports: [
+  imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
@@ -29,6 +32,14 @@ import { PlanEngineModule } from './modules/plan-engine/plan-engine.module';
     GoalsModule,
 
     PlanEngineModule,
+
+    TrackingModule,
+
+    CoachModule,
+
+    AuditModule,
+
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
