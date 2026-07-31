@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { GoogleProfile } from 'src/types/auth.types';
+
+interface GoogleProfileData extends GoogleProfile {
+  password: null;
+  isEmailVerified: true;
+}
 
 @Injectable()
 export class UserRepository {
@@ -14,10 +20,18 @@ export class UserRepository {
     return this.userModel.create(data);
   }
 
+  async googleCreate(data: GoogleProfileData) {
+    return this.userModel.create(data);
+  }
+
   async findById(id: string) {
     return this.userModel.findByPk(id, {
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password', 'googleId', 'hashedRefreshToken'] },
     });
+  }
+
+  async findCompleteUserById(id: string) {
+    return this.userModel.findByPk(id);
   }
 
   async findByEmail(email: string) {

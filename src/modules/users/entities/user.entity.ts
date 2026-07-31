@@ -15,7 +15,7 @@ import {
 } from 'sequelize-typescript';
 import { Role } from '../enums/role.enum';
 import { UserStatus } from '../enums/status.enum';
-
+import { Provider } from '../enums/provider.enum';
 
 @Table({
   tableName: 'users',
@@ -53,13 +53,13 @@ export class User extends Model<
   declare email: string;
 
   @Column({
-    type: DataType.STRING,
-    allowNull: false,
+    type: DataType.STRING(255),
+    allowNull: true,
     validate: {
       len: [8, 255],
     },
   })
-  declare password: string;
+  declare password: string | null;
 
   @Column({
     type: DataType.ENUM(...Object.values(Role)),
@@ -74,6 +74,31 @@ export class User extends Model<
     defaultValue: false,
   })
   declare isEmailVerified: CreationOptional<boolean>;
+
+  @Column({
+    type: DataType.STRING(255),
+    allowNull: true,
+  })
+  declare googleId: string | null;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare avatar: string | null;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare hashedRefreshToken: string | null;
+
+  @Column({
+    type: DataType.ENUM(...Object.values(Provider)),
+    allowNull: false,
+    defaultValue: Provider.LOCAL,
+  })
+  declare provider: CreationOptional<Provider>;
 
   @Column({
     type: DataType.ENUM(...Object.values(UserStatus)),
