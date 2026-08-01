@@ -14,6 +14,8 @@ import { TrackingModule } from './modules/tracking/tracking.module';
 import { CoachModule } from './modules/coach/coach.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -40,6 +42,10 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     AuditModule,
 
     NotificationsModule,
+
+    AuthModule,
+
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
