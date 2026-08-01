@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, UseGuards } from '@nestjs/common';
 import { IntakeService } from './intake.service';
 import { CreateIntakeDto } from './dto/create-intake.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
