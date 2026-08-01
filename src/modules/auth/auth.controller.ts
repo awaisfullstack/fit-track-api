@@ -89,12 +89,16 @@ export class AuthController {
     @Req() req: CurrentGoogleUserRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const profile = req.user;
-    const { tokens } = await this.authService.validateGoogleUser(profile);
-    this.setAuthCookies(res, tokens);
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/oauth-callback?token=${tokens.accessToken}`,
-    );
+    try {
+      const profile = req.user;
+      const { tokens } = await this.authService.validateGoogleUser(profile);
+      this.setAuthCookies(res, tokens);
+      return res.redirect(`${process.env.FRONTEND_URL}/oauth-callback`);
+    } catch {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/oauth-callback?error=google_auth_failed`,
+      );
+    }
   }
 
   @HttpCode(HttpStatus.OK)
