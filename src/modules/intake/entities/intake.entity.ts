@@ -32,7 +32,7 @@ export class Intake extends Model<
     defaultValue: DataType.UUIDV1,
     primaryKey: true,
   })
-  declare id: CreationOptional<string>;
+  declare id?: CreationOptional<string>;
 
   @Column({
     type: DataType.INTEGER,
@@ -140,5 +140,5 @@ export class Intake extends Model<
   declare userId: string;
 
   @BelongsTo(() => User, 'userId')
-  declare user: NonAttribute<User>;
+  declare user?: NonAttribute<User>;
 }

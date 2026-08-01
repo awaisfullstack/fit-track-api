@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { IntakeService } from './intake.service';
 import { CreateIntakeDto } from './dto/create-intake.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from 'src/types/auth.types';
+import { JwtAccessGuard } from 'src/common/guards/jwt-access.guard';
 import { UpdateIntakeDto } from './dto/update-intake.dto';
+import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
 
+@UseGuards(JwtAccessGuard)
 @Controller('intake')
 export class IntakeController {
   constructor(private readonly intakeService: IntakeService) {}
 
   @Post()
-  create(@Body() createIntakeDto: CreateIntakeDto) {
-    return this.intakeService.create(createIntakeDto);
+  @ResponseMessage('Intake created successfully')
+  create(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() createIntakeDto: CreateIntakeDto,
+  ) {
+    return this.intakeService.create(user.id, createIntakeDto);
   }
 
   @Get()
-  findAll() {
-    return this.intakeService.findAll();
+  async findOne(@CurrentUser() user: AuthenticatedUser) {
+    return await this.intakeService.findByUserId(user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.intakeService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIntakeDto: UpdateIntakeDto) {
-    return this.intakeService.update(+id, updateIntakeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.intakeService.remove(+id);
+  @Patch()
+  @ResponseMessage('Intake updated successfully')
+  update(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() updateIntakeDto: UpdateIntakeDto,
+  ) {
+    return this.intakeService.update(user.id, updateIntakeDto);
   }
 }
