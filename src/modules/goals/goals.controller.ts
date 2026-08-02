@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { GoalsService } from './goals.service';
 import { CreateGoalDto } from './dto/create-goal.dto';
-import { UpdateGoalDto } from './dto/update-goal.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from 'src/types/auth.types';
+import { JwtAccessGuard } from 'src/common/guards/jwt-access.guard';
+import { UpdateGoalStatusDto } from './dto/update-goal-status.dto';
 
+@UseGuards(JwtAccessGuard)
 @Controller('goals')
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
 
   @Post()
-  create(@Body() createGoalDto: CreateGoalDto) {
-    return this.goalsService.create(createGoalDto);
+  create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateGoalDto) {
+    return this.goalsService.create(user.id, dto);
   }
 
   @Get()
-  findAll() {
-    return this.goalsService.findAll();
+  findActive(@CurrentUser() user: AuthenticatedUser) {
+    return this.goalsService.findActive(user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.goalsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGoalDto: UpdateGoalDto) {
-    return this.goalsService.update(+id, updateGoalDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.goalsService.remove(+id);
+  @Patch(':id/status')
+  updateStatus(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateGoalStatusDto,
+  ) {
+    return this.goalsService.updateStatus(user.id, id, dto);
   }
 }
